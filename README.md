@@ -6,6 +6,4 @@ This demo app shows a simple user profile app set up using
 - nodejs backend with express module
 - mongodb for data storage
 
-For instructions to run, please checkout the branches:
-
-**local-development** - local app, docker mongodb & mongo-express
+For instructions to run, please checkout specific branches.
