@@ -9,6 +9,15 @@ This demo app shows a simple user profile app set up using
 
 For instructions to run, please checkout specific branches.
 
+### On branch *docker-compose*
+
+Application is ran locally, MongoDB and Mongo Express are ran via a docker compose file.
+
+Step 1: 
+
+    docker-compose -f mongo.yaml up
+
+Follow Step *4 - 6* below to start application locally.
 ### On branch *local-development*
 
 Application is ran locally, MongoDB and Mongo Express are ran in Docker
