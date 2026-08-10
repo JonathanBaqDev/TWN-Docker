@@ -9,13 +9,30 @@ This demo app shows a simple user profile app set up using
 
 For instructions to run, please checkout specific branches.
 
+### On branch *docker-image*
+
+Step 1: Create application image, run this command where the Dockerfile is located:
+
+    docker build -t my-app:1.0 .
+
+Step 2: Run MongoDB and Mongo Express from docker compose
+
+    docker-compose -f docker-compose.yaml up
+
+Step 3: Run your application container, check which network the Mongo containers are in and specify your local ports:
+
+    docker network ls
+    docker run --network <network-name> -p 3000:3000 my-app:1.0
+
+Follow Steps 4 & 5 in branch *local-development* to setup the DB, access the application from `http://localhost:3000`
+
 ### On branch *docker-compose*
 
 Application is ran locally, MongoDB and Mongo Express are ran via a docker compose file.
 
 Step 1: 
 
-    docker-compose -f mongo.yaml up
+    docker-compose -f docker-compose.yaml up
 
 Follow Step *4 - 6* below to start application locally.
 ### On branch *local-development*
