@@ -9,10 +9,26 @@ This demo app shows a simple user profile app set up using
 
 For instructions to run, please checkout specific branches.
 
+## On branch *nexus-deploy*
+
+App, MongoDB and Mongo Express are all ran via `docker compose`. App image is pulled from a private nexus repository.
+
+Check branch *nexus-publish* and [TWN-Nexus-Gradle](https://github.com/JonathanBaqDev/TWN-Nexus-Gradle) to setup Nexus and publish the app image.
+
+Step 1: Fill in the docker-compose file with the Nexus host IP, docker repo port and name. Un-comment the lines afterwards by removing the #.
+
+Step 2: On the deployment server
+
+- Authenticate to the Nexus repo via `docker login <Nexus_server_IP>:<docker_repo_port>`
+- Copy docker-compose file to server - you can also create a new file and copy the contents via `vim`
+- Start containers with `docker-compose -f docker-compose.yaml up`
+
 ## On branch *nexus-publish*
-*These are steps to publish the app image to a Nexus repository, checkout other branches' instructions on how to run the app*
+
+*These are steps to publish the app image to a Nexus repository, check *docker-image* branch's instructions on how to run the app*
 
 #### Create Docker Repository
+
 Check: [TWN-Nexus-Gradle](https://github.com/JonathanBaqDev/TWN-Nexus-Gradle) for steps to configure Nexus on a server
 
 In Nexus:
@@ -60,6 +76,7 @@ Add the Nexus registry to `insecure-registries`:
     docker login <Nexus_server_IP>:<docker_repo_port>
 
 #### Tag image
+
 *Check instructions on how to build the app image in branch **docker-image***
 
     docker tag my-app:1.0 <Nexus_server_IP>:<docker_repo_port>/my-app:1.0
@@ -71,6 +88,8 @@ Add the Nexus registry to `insecure-registries`:
     curl -u <username>:<password> -X GET "http://<Nexus_server_IP>:8081/service/rest/v1/components?repository=<docker_repo>"
 
 ## On branch *docker-image*
+
+Application is ran in Docker, MongoDB and Mongo Express are ran via `docker compose`.
 
 Step 1: Create application image, run this command where the Dockerfile is located:
 
@@ -89,7 +108,7 @@ Follow Steps 4 & 5 in branch *local-development* to setup the DB, access the app
 
 ## On branch *docker-compose*
 
-Application is ran locally, MongoDB and Mongo Express are ran via a docker compose file.
+Application is ran locally, MongoDB and Mongo Express are ran via `docker compose`.
 
 Step 1: 
 
