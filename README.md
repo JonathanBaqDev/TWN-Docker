@@ -9,6 +9,36 @@ This demo app shows a simple user profile app set up using
 
 For instructions to run, please checkout specific branches.
 
+## On branch *docker-volume*
+
+*These are steps to add and check volumes for persistent storage, please check the **nexus-deploy** or **docker-image** branches for how to run the app.*
+
+Step 1: Find the Database Data Directory
+
+Check the specific database's documentation to determine where it stores its data inside the container.
+
+- MongoDB - /data/db
+- MySQL - /var/lib/mysql
+
+Step 2: Check the Data Path Inside the Container using `docker exec -it <container_ID> sh`
+
+Step 3: Add named volumes definition to docker compose, see [commit](https://github.com/JonathanBaqDev/TWN-Docker/commit/3c9c6b66771f019f17035e078dcd4d734d89169c).
+
+
+Step 4: Check Where Docker Stores Volumes
+
+The physical location of Docker volumes depends on the operating system.
+
+- Windows: `C:\ProgramData\docker\volumes`
+- Linux & macOS `/var/lib/docker/volumes`
+
+> **Note:** On Windows and macOS, Docker runs containers inside a Linux VM, so the volume data is stored inside that VM rather than directly in the host filesystem. 
+
+You can connect to the Docker Linux VM by running: `docker run -it --privileged --pid=host debian nsenter -t 1 -m -u -n -i sh`
+
+- For a named volume defined in Docker Compose, the directory is typically: `<app_name>_<volume_name>`
+- Anonymous volumes do not have a user-defined name. Docker generates a random ID for the volume.
+
 ## On branch *nexus-deploy*
 
 App, MongoDB and Mongo Express are all ran via `docker compose`. App image is pulled from a private nexus repository.
