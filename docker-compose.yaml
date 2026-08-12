@@ -14,6 +14,8 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongodb_data:/data/db
   mongo-express:
     image: mongo-express
     ports:
@@ -26,3 +28,6 @@ services:
       - ME_CONFIG_BASICAUTH_PASSWORD=pass
       - ME_CONFIG_MONGODB_SERVER=mongodb
       - ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017
+volumes:
+  mongodb_data:
+    driver: local
