@@ -7,11 +7,32 @@ This demo app shows a simple user profile app set up using
 - nodejs backend with express module
 - mongodb for data storage
 
-For instructions to run, please checkout specific branches.
+Branches show the progress on the project starting from *local-development* to *docker-nexus*.
+
+## On branch *docker-nexus*
+
+Step 1: Install Docker on the server
+
+```
+apt update
+apt install docker
+```
+
+Step 2: Check the image documentation for [nexus3](https://hub.docker.com/r/sonatype/nexus3).
+
+Step 3: Configure Docker volume and start the container, Docker will pull the image from DockerHub even if you did not pull the image beforehand.
+
+```
+docker volume create --name nexus-data
+docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus3
+```
+Step 4: You can access nexus at `<server_IP>:8081`. You can check the docker volume by running `docker inspect <volume_name>` 
+
+Step 5: Follow steps in branch *nexus-deploy* to publish app image on Nexus and run the applications.
 
 ## On branch *docker-volume*
 
-*These are steps to add and check volumes for persistent storage, please check the **nexus-deploy** or **docker-image** branches for how to run the app.*
+*These are steps to add and check volumes for persistent storage on the MongoDB container, please check the **nexus-deploy** or **docker-image** branches for how to run the app.*
 
 Step 1: Find the Database Data Directory
 
@@ -43,7 +64,8 @@ You can connect to the Docker Linux VM by running: `docker run -it --privileged 
 
 App, MongoDB and Mongo Express are all ran via `docker compose`. App image is pulled from a private nexus repository.
 
-Check branch *nexus-publish* and [TWN-Nexus-Gradle](https://github.com/JonathanBaqDev/TWN-Nexus-Gradle) to setup Nexus and publish the app image.
+- To setup Nexus check either [TWN-Nexus-Gradle](https://github.com/JonathanBaqDev/TWN-Nexus-Gradle) (directly on server) or branch *nexus-docker* (on Docker container).  
+- To publish app image to Nexus check branch *nexus-publish*.
 
 Step 1: Fill in the docker-compose file with the Nexus host IP, docker repo port and name. Un-comment the lines afterwards by removing the #.
 
