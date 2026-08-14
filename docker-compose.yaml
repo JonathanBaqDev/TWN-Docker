@@ -8,7 +8,7 @@ services:
       # - MONGO_DB_USERNAME=admin 
       # - MONGO_DB_PWD=password
   mongodb:
-    image: mongo
+    image: mongo:8.3
     ports:
       - 27017:27017
     environment:
@@ -17,7 +17,7 @@ services:
     volumes:
       - mongodb_data:/data/db
   mongo-express:
-    image: mongo-express
+    image: mongo-express:1.0.2-20-alpine3.19
     ports:
       - 8081:8081
     restart: always

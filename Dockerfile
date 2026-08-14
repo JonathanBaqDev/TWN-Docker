@@ -1,11 +1,15 @@
 FROM node:20-alpine
 
-RUN mkdir -p /home/app
-
-COPY ./app /home/app
-
 WORKDIR /home/app
 
-RUN npm install
+RUN chown -R node:node /home/app
+
+COPY ./app/package.json ./app/package-lock.json ./
+
+USER node
+
+RUN npm ci
+
+COPY ./app ./
 
 CMD ["node", "server.js"]
