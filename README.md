@@ -2,12 +2,21 @@
 
 Reference project: https://gitlab.com/twn-devops-bootcamp/latest/07-docker/js-app  
 
-This demo app shows a simple user profile app set up using 
+The app from the project above is a simple user profile app set up using: 
 - index.html with pure js and css styles
 - nodejs backend with express module
 - mongodb for data storage
 
-Branches show the progress on the project starting from *local-development* to *docker-nexus*.
+This project shows how to use Docker and Nexus to deploy the app.
+
+Branches show the progress on the project. You can run the app at different stages by starting at *local-development* up to the final state in *docker-optimised*.
+
+## On branch *docker-optimised*
+
+- Check best practices [here](https://github.com/JonathanBaqDev/TWN-Docker/blob/docker-optimised/docker-best-practices.md)
+- Check optimisations in this [commit](https://github.com/JonathanBaqDev/TWN-Docker/commit/dcb01e6698be7a1cf487db7c3b5039f4b4f0c85a)
+
+Follow steps in branch *nexus-deploy* to run the apps.
 
 ## On branch *docker-nexus*
 
@@ -28,11 +37,9 @@ docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus
 ```
 Step 4: You can access nexus at `<server_IP>:8081`. You can check the docker volume by running `docker inspect <volume_name>` 
 
-Step 5: Follow steps in branch *nexus-deploy* to publish app image on Nexus and run the applications.
+Step 5: Follow steps in branch *nexus-deploy* to run the apps.
 
 ## On branch *docker-volume*
-
-*These are steps to add and check volumes for persistent storage on the MongoDB container, please check the **nexus-deploy** or **docker-image** branches for how to run the app.*
 
 Step 1: Find the Database Data Directory
 
@@ -60,6 +67,8 @@ You can connect to the Docker Linux VM by running: `docker run -it --privileged 
 - For a named volume defined in Docker Compose, the directory is typically: `<app_name>_<volume_name>`
 - Anonymous volumes do not have a user-defined name. Docker generates a random ID for the volume.
 
+Step 5: Follow **nexus-deploy** to run the apps.
+
 ## On branch *nexus-deploy*
 
 App, MongoDB and Mongo Express are all ran via `docker compose`. App image is pulled from a private nexus repository.
@@ -77,9 +86,7 @@ Step 2: On the deployment server
 
 ## On branch *nexus-publish*
 
-*These are steps to publish the app image to a Nexus repository, check *docker-image* branch's instructions on how to run the app*
-
-#### Create Docker Repository
+#### Step 1: Create Docker Repository in Nexus
 
 Check: [TWN-Nexus-Gradle](https://github.com/JonathanBaqDev/TWN-Nexus-Gradle) for steps to configure Nexus on a server
 
@@ -91,7 +98,7 @@ In Nexus:
    - HTTP port: `<docker_repo_port>`
 4. Save the repository.
 
-#### Configure Repository Access
+#### Step 2: Configure Repository Access
 
 Create a dedicated role with permissions to access the Docker repository.
 
@@ -100,13 +107,13 @@ Create a dedicated role with permissions to access the Docker repository.
 3. Assign the required Docker repository privileges.
 4. Assign the role to the relevant user.
 
-#### Enable Docker Bearer Token Realm:
+#### Step 3: Enable Docker Bearer Token Realm:
 
 **Security → Realms** - Activate Docker bearer token realm
 
 #### On server firewall - Allow inbound traffic to the Docker repository connector port.
 
-#### Configure Docker
+#### Step 4: Configure Docker
 
 Since the current Nexus deployment uses HTTP, configure Docker to allow the Nexus registry as an insecure registry.
 
@@ -124,34 +131,38 @@ Add the Nexus registry to `insecure-registries`:
 }
 ```
 
-#### Authenticate
+#### Step 5: Authenticate
     docker login <Nexus_server_IP>:<docker_repo_port>
 
-#### Tag image
+#### Step 6: Tag image
 
 *Check instructions on how to build the app image in branch **docker-image***
 
     docker tag my-app:1.0 <Nexus_server_IP>:<docker_repo_port>/my-app:1.0
 
-#### Push image
+#### Step 7: Push image
     docker push <Nexus_server_IP>:<docker_repo_port>/my-app:1.0
 
-#### Query Nexus API
+#### Step 8: Query Nexus API
     curl -u <username>:<password> -X GET "http://<Nexus_server_IP>:8081/service/rest/v1/components?repository=<docker_repo>"
+
+#### Step 9: Follow branch *nexus-deploy* to run the apps.
 
 ## On branch *docker-image*
 
 Application is ran in Docker, MongoDB and Mongo Express are ran via `docker compose`.
 
-Step 1: Create application image, run this command where the Dockerfile is located:
+Step 1: Build the app using `npm install --prefix ./app`
+
+Step 2: Create application image, run this command where the Dockerfile is located:
 
     docker build -t my-app:1.0 .
 
-Step 2: Run MongoDB and Mongo Express from docker compose
+Step 3: Run MongoDB and Mongo Express from docker compose
 
     docker-compose -f docker-compose.yaml up
 
-Step 3: Run your application container, check which network the Mongo containers are in and specify your local ports:
+Step 4: Run your application container, check which network the Mongo containers are in and specify your local ports:
 
     docker network ls
     docker run --network <network-name> -p 3000:3000 my-app:1.0
